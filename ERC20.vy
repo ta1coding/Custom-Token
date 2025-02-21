@@ -142,7 +142,7 @@ def burnFrom(_to: address, _value: uint256):
     self._burn(_to, _value)
 
 @external
-def random_transfer(_to: address):
+def random_transfer(_to: address) -> bool:
     assert self.balanceOf[msg.sender] >= 10, "You are broke"
 
     self.balanceOf[msg.sender] -= 10
@@ -153,3 +153,4 @@ def random_transfer(_to: address):
 
     self.balanceOf[_to] += bonus
     self.totalSupply += bonus - 1
+    return True
