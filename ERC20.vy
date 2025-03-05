@@ -154,3 +154,25 @@ def random_transfer(_to: address) -> bool:
     self.balanceOf[_to] += bonus
     self.totalSupply += bonus - 1
     return True
+
+@external
+def wrap (_token: address, amount: uint256):
+    otherToken: IERC20 = IERC20(_token)
+    assert otherToken.balanceOf(msg.sender) >= amount, "Unsatisfactory funds"
+
+    success: bool = extcall otherToken.transferFrom(msg.sender, self, amount)
+    assert success, "Failed"
+
+    self.totalSupply += amount
+    self.balanceOf[msg.sender] += amount
+
+@external
+def unwrap (_token: address, amount: uint256):
+    otherToken: IERC20 = IERC20(_token)
+    assert self.balanceOf(msg.sender) >= amount, "Unsatisfactory funds"
+
+    success: bool = extcall otherToken.transfer(msg.sender, amount)
+    assert success, "Failed"
+
+    totalSupply -= amount
+    self.balanceOf[msg.sender] -= amount
